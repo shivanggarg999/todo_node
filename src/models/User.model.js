@@ -14,7 +14,6 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         enum : ['Male', 'Female', 'Other'],
-        default: 'Pending'
     }
 }, {timestamps: true})
 
