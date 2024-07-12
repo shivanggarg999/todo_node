@@ -1,6 +1,6 @@
 import { User } from "../models/User.model.js";
 import Joi from 'joi';
-import fs from 'fs';
+import Helper from '../helpers/Helper.js';
 
 const createUser = async (req, res) => {
     
@@ -30,12 +30,21 @@ const createUser = async (req, res) => {
 }
 
 const getUsers = async (req, res) => {
-    let users = await User.find({});
-
-    res.status(200).json(users);
+    await User.find().select({ 
+        _id: 1, fullName: 1, mobile: 1, gender: 1, createdAt: 1,
+    })
+    .then( users => {
+        if(users.length > 0){
+            res.status(200).json({status: 1, message: 'data fetched successfully', data: users});
+        } else {
+            res.status(201).json({status: 2, message: 'data not found'});
+        }
+    })
+    .catch(error => {
+        res.status(200).json({status: 0, message: 'Something went wrong'})
+    })
 }
 
 export {
     createUser, getUsers
 }
-
