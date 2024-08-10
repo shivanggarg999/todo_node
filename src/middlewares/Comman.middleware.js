@@ -1,8 +1,19 @@
-import morgan from 'morgan';
 import {logger} from '../services/logger.js';
+import multer from 'multer';
+import morgan from 'morgan';
+import cors from 'cors';
+import cookieParser  from "cookie-parser";
+
+const upload = multer();
 
 
-const CommanMiddleware =  (app) => {
+const CommanMiddlewares =  (app, express) => {
+    app.use(cors());
+    app.use(cookieParser());
+    app.use(upload.none());
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: true }));
+
     // log the incoming reuqest with morgan middlewere
     const morganFormat = ':method :url :status :response-time ms';
     app.use(morgan(morganFormat,{
@@ -21,4 +32,4 @@ const CommanMiddleware =  (app) => {
     ));
 }
 
-export default CommanMiddleware;
+export default CommanMiddlewares;

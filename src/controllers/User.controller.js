@@ -9,29 +9,8 @@ const createUserSchema = Joi.object({
     gender: Joi.string().valid('Male', 'Female', 'Other').required(),
 });
 
-export const createUser = async (req, res) => {
-    const { error, value } = createUserSchema.validate(req.body);
-
-    if (error) {
-        return res.status(400).json({status: 2, message: error.details[0].message.replace(/"/g, '')});
-    }
-
-    try {
-        await User.create(req.body);
-        res.status(201).json({status: 1, message: 'user created Successfully'});
-    } catch (error) {
-        if (error.code == 11000) {
-            res.status(401).json({status: 0, message: 'mobile already exist'});
-        } else {
-            res.status(500).json({status: 0, message: 'Something went wrong !'});
-        }
-    }
-}
-
-export const getUsers = async (req, res) => {
-    await User.find().select({ 
-        _id: 1, fullName: 1, mobile: 1, gender: 1, createdAt: 1, updatedAt: 1
-    })
+export const getUserList = async (req, res) => {
+    await User.find().select("-password")
     .then( users => {
         if(users.length > 0){
             res.status(200).json({status: 1, message: 'data fetched successfully', data: users});
