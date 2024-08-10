@@ -1,10 +1,9 @@
 import dotenv from 'dotenv';
 dotenv.config({path: './.env'});
-import connectDB from "./db/index.js";
+import connection from "./db/index.js";
 import express from 'express';
 import cors from 'cors';
 
-connectDB();
 const app = express();
 app.use(cors());
 
@@ -16,6 +15,6 @@ Routes(app);
 
 
 app.listen(process.env.PORT, () => {
-    console.log(`app is runnig on port : ${process.env.PORT}`)
+    console.log(`App is runnig on port : ${process.env.PORT}`)
 })
 
