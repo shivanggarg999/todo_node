@@ -2,11 +2,9 @@ import morgan from 'morgan';
 import {logger} from '../services/logger.js';
 
 
-const CommanMiddleware =  (app, express) => {
-    app.use(express.json({ extended: false }));
-    app.use(express.urlencoded({ extended: false }));
-
-    const morganFormat = ':method :url :status :response-time ms :req[header]';
+const CommanMiddleware =  (app) => {
+    // log the incoming reuqest with morgan middlewere
+    const morganFormat = ':method :url :status :response-time ms';
     app.use(morgan(morganFormat,{
             stream: {
                 write: (message) => {

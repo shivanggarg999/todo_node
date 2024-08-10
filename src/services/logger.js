@@ -6,7 +6,7 @@ const { combine, timestamp, json, colorize } = format;
 const consoleLogFormat = format.combine(
   format.colorize(),
   format.printf(({ level, message, timestamp }) => {
-    timestamp = moment(timestamp).format('DD-MM-YYYY hh:mm:ss A');
+    timestamp = moment(timestamp).format('DD-MM-YYYY HH:mm:ss');
     return `${level}: ${timestamp} ${message}`;
   })
 );
@@ -14,25 +14,47 @@ const consoleLogFormat = format.combine(
 // Custom format for console logging with colors
 const fileLogFormat = format.combine(
     format.printf(({ level, message, timestamp }) => {
-      timestamp = moment(timestamp).format('DD-MM-YYYY hh:mm:ss A');
+      timestamp = moment(timestamp).format('DD-MM-YYYY HH:mm:ss');
       return `${level}: ${timestamp} ${message}`;
     })
 );
 
-// Create a Winston logger
+
+// Create a Winston logger for file and console
 const logger = createLogger({
+  level: 'verbose',
+  transports: [
+    // add logs to console
+    new transports.Console({
+      format: consoleLogFormat
+    }),
+
+    // add logs to a file
+    new transports.File({
+      filename: 'src/logs/app.log',
+      format: fileLogFormat
+    })
+  ],
+});
+
+const fileLogger = createLogger({
+  level: 'verbose',
+  transports: [
+    new transports.File({
+      filename: 'src/logs/app.log',
+      format: fileLogFormat
+    })
+  ],
+});
+
+const consoleLogger = createLogger({
   level: 'verbose',
   transports: [
     new transports.Console({
       format: consoleLogFormat
     }),
-    new transports.File({
-        filename: 'src/logs/app.log',
-        format: fileLogFormat
-    })
   ],
 });
 
 
-
-export {logger};
+export {logger, fileLogger, consoleLogger};
