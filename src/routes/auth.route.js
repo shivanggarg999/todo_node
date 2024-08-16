@@ -9,6 +9,4 @@ router.route('/login').post(login);
 router.route('/logout').get( AuthenticateUser, logout);
 router.route('/revokeToken').post(revokeToken);
 
-
-
 export default router;
