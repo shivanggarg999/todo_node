@@ -3,16 +3,15 @@ import { getUser, getUserList, updateUser } from "../controllers/User.controller
 import AuthenticateUser from "../middlewares/Authenicate.middleware.js";
 
 const router = Router();
-router.use(AuthenticateUser);
+router.use( AuthenticateUser );
 
-router.route('/')
-    .get(getUserList)
+router.route('/').get( getUserList )
 
 router.route('/:id')
-    .get(getUser)
-    .put(updateUser)
-    .patch(updateUser)
-    // .delete(deleteUser);
+    .get( getUser )
+    .put( updateUser )
+    .patch( updateUser )
+    // .delete( deleteUser );
 
 
 

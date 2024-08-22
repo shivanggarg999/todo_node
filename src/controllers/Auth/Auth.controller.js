@@ -1,10 +1,7 @@
 import { User } from "../../models/User.model.js";
 import Joi from 'joi';
 import jwt from "jsonwebtoken";
-import ms from "ms";
 
-const JWT_ACCESS_EXP = ms(process.env.JWT_ACCESS_EXP);
-const JWT_REFRESH_EXP = ms(process.env.JWT_REFRESH_EXP);
 
 // register validation rules and function
 const registerUserRules = Joi.object({
@@ -71,8 +68,8 @@ export const login = async (req, res) => {
                 const { token, refresh_token } = await user.revokeJwt();
                 const { password, ...userData } = user.toObject();
 
-                res.cookie('token', token, { httpOnly: true, secure: true, maxAge: JWT_ACCESS_EXP });
-                res.cookie('refresh_token', refresh_token, { httpOnly: true, secure: true, maxAge: JWT_REFRESH_EXP });
+                res.cookie('token', token, { httpOnly: true, secure: true });
+                res.cookie('refresh_token', refresh_token, { httpOnly: true, secure: true });
                 return res.status(200).json({status_code: 1, message: `Login successfull`, token: token, refresh_token: refresh_token, userData: userData});
             } else {
                 return res.status(401).json({status_code: 0, message: `invalid login credentials`});
@@ -89,7 +86,7 @@ export const login = async (req, res) => {
 // logout here
 export const logout = async (req, res) => {
     try{
-        const user_id = req.user.id;
+        const user_id = req.user_id;
         await User.findByIdAndUpdate(user_id, {refresh_token: null});
 
         res.clearCookie('token');
@@ -101,6 +98,7 @@ export const logout = async (req, res) => {
 }
 
 
+// revoke token
 export const revokeToken = async (req, res) => {
     try {
         const refresh_token = req.cookies.refresh_token || req.headers['refresh_token'];
@@ -121,7 +119,7 @@ export const revokeToken = async (req, res) => {
         if(userData){
             const { token } = await userData.generateAccessToken();
     
-            res.cookie('token', token, { httpOnly: true, secure: true, maxAge: JWT_ACCESS_EXP });
+            res.cookie('token', token, { httpOnly: true, secure: true });
             return res.status(200).json({status_code: 1, message: `Token revoked successfully.`, token: token, userData: userData });
         } else {
             return res.status(401).json({status_code: 0, message: `Unauthorized request, login again.`});
